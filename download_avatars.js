@@ -33,8 +33,7 @@ function getRepoContributors(repoOwner, repoName, cb) {
    // console.log (requestURL)
 
 
-
-getRepoContributors("jquery", "jquery", function (data) {
+getRepoContributors (process.argv[2], process.argv[3], function (data) {
   data.forEach(function (contributor) {
   var path = `./avatars/${contributor.login}.jpg`;
   downloadImageByURL(contributor.avatar_url, path);
