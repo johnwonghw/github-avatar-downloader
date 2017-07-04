@@ -1,4 +1,5 @@
 var request = require('request');
+var fs = require('fs')
 
 console.log('Welcome to the GitHub Avatar Downloader!');
 
@@ -22,46 +23,43 @@ function getRepoContributors(repoOwner, repoName, cb) {
   request (options(path), function (error, response, body) {
     try {
       cb(JSON.parse(body));
+
     } catch (err) {
       console.log ("Errors: ", err)
     }
 
 })};
    // var requestURL = 'https://'+ GITHUB_USER + ':' + GITHUB_TOKEN + '@api.github.com/repos/' + repoOwner + '/' + repoName + '/contributors';
-   //  console.log (requestURL)
+   // console.log (requestURL)
 
 
 
-getRepoContributors("jquery", "jquery", (data) => {
-  data.forEach((contributor) => {
-    console.log(contributor.avatar_url);
+getRepoContributors("jquery", "jquery", function (data) {
+  data.forEach(function (contributor) {
+  var path = `./avatars/${contributor.login}.jpg`;
+  downloadImageByURL(contributor.avatar_url, path);
   });
 });
-  // console.log("Errors:", err);
-  // console.log("Result:", result);
 
 
 
+function downloadImageByURL(url, filePath) {
+request.get(url)               // Note 1
+       .on('error', function (err) {                                   // Note 2
+         throw err;
+       })
+       .on ('request', function (response) {
+         console.log('Downloading image...')
+       })
+       .on('response', function (response) {                           // Note 3
+         console.log(' Response Status Message: ', response.statusMessage, '\n', 'Response Type: ', response.headers['content-type'])
+       })
+       .pipe(fs.createWriteStream(filePath))
+       .on('finish', function() {
+         console.log('Response stream complete.');
+    });            // Note 4
+}
 
 
 
-
-
-  // var requestURL = 'https://'+ GITHUB_USER + ':' + GITHUB_TOKEN + '@api.github.com/repos/' + repoOwner + '/' + repoName + '/contributors';
-  //   console.log (requestURL)
-
-  // request.get(requesURL)
-// function getRepoContributors(repoOwner, repoName, cb) {
-//   const path = `/repos/${repoOwner}/${repoName}/contributors`;
-//   request(options(path), function (err, response, body) {
-//     console.log(body)
-// })
-
-// }
-
-// getRepoContributors("jquery", "jquery", function(err, result) {
-//   console.log("Errors:", err);
-//   console.log("Result:", result);
-//   });
-
-// 'https://avatars0.githubusercontent.com/u/192451?v=3'
+downloadImageByURL("https://avatars2.githubusercontent.com/u/2741?v=3&s=466", "avatars/kvirani.jpg")
