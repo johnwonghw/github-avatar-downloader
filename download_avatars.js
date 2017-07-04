@@ -1,5 +1,5 @@
 var request = require('request');
-var fs = require('fs')
+var fs = require('fs');
 
 console.log('Welcome to the GitHub Avatar Downloader!');
 
@@ -13,7 +13,7 @@ function options (path) {
     qs: {
       access_token: process.env.GITHUB_TOKEN
     }
-}}
+}};
 
 
 function getRepoContributors(repoOwner, repoName, cb) {
@@ -22,23 +22,25 @@ function getRepoContributors(repoOwner, repoName, cb) {
     try {
       cb(JSON.parse(body));
     } catch (err) {
-      console.log ("Errors: ", err)
+      console.log ("Errors: ", err);
     }
-})};
+  })
+};
    // var requestURL = 'https://'+ GITHUB_USER + ':' + GITHUB_TOKEN + '@api.github.com/repos/' + repoOwner + '/' + repoName + '/contributors';
    // console.log (requestURL)
 
-var repoName = process.argv[2]
-var repoUser = process.argv[3]
+var repoName = process.argv[2];
+var repoUser = process.argv[3];
+
 getRepoContributors (repoName, repoUser, function (data) {
   if (repoName === undefined || repoUser === undefined) {
     console.log ('Please enter both a Repository Name and the Repository Owner\'s Username')
   } else {
-  data.forEach(function (contributor) {
-  var path = `./avatars/${contributor.login}.jpg`;
-  downloadImageByURL(contributor.avatar_url, path);
-    })
-  };
+      data.forEach(function (contributor) {
+      var path = `./avatars/${contributor.login}.jpg`;
+      downloadImageByURL(contributor.avatar_url, path);
+      })
+    };
 });
 
 
